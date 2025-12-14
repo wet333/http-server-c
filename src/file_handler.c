@@ -13,13 +13,15 @@ void send_file(int client_socket, char *filename) {
     HttpResponse res;
     char response_buffer[BUFFER_SIZE];
 
+    printf("File to open: %s \n", filename);
+
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
         perror("Error opening file");
 
         // Not found - Response
         response_init(&res, HTTP_NOT_FOUND, MIME_APPLICATION_JSON);
-        response_set_body(&res, "{\"error\": \"Usuario no encontrado\"}");
+        response_set_body(&res, "{\"Error 404\": \"File Not found.\"}");
 
         int total_bytes = get_response_size(&res, response_buffer, sizeof(response_buffer));
 

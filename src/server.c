@@ -33,6 +33,6 @@ HttpServer init_server(int port) {
         exit(EXIT_FAILURE);
     }
 
-    printf("Server initialized on port %d\n", port);
+    printf("Server initialized on port %d\n\n", port);
     return server;
 }

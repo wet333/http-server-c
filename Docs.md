@@ -66,7 +66,9 @@ nano_server_c/
 │
 ├── bin/              # Binary output and static files
 │   ├── server        # Compiled executable
-│   └── index.html    # Example HTML file served by the server
+│   ├── index.html    # Example HTML file served by the server
+│   └── pages/        # Additional HTML pages
+│       └── tutorial.html # Tutorial HTML file about C static libraries
 │
 ├── Makefile          # Build configuration
 └── Docs.md          # This documentation file
@@ -93,16 +95,22 @@ The project uses a **Makefile** for compilation:
 
 The entry point of the application. Contains the main event loop that keeps the server running.
 
-#### `main()`
+#### `main(int argc, char *argv[])`
 - **Purpose**: Entry point that initializes the server and runs the main event loop
+- **Parameters**:
+  - `argc`: Number of command-line arguments
+  - `argv`: Array of command-line argument strings
 - **Flow**:
-  1. Initializes the HTTP server on port 8080
-  2. Enters an infinite loop waiting for client connections
-  3. Accepts new connections using `accept()`
-  4. Reads the client request (currently stored in a temporary buffer)
-  5. Sends a file response using `send_file()`
-  6. Closes the client socket
-- **Note**: Currently ignores the actual request content and always sends `index.html`
+  1. Validates command-line arguments (requires at least one argument: the filename to serve)
+  2. Exits with error code 1 if no filename is provided
+  3. Stores the filename from `argv[1]` as the response file
+  4. Initializes the HTTP server on port 8080
+  5. Enters an infinite loop waiting for client connections
+  6. Accepts new connections using `accept()`
+  7. Reads the client request (currently stored in a temporary buffer)
+  8. Sends a file response using `send_file()` with the specified filename
+  9. Closes the client socket
+- **Note**: Currently ignores the actual request content and serves the file specified via command-line argument
 
 ---
 
@@ -304,16 +312,17 @@ Defines global constants and configuration values used throughout the applicatio
 
 Here's a step-by-step example of what happens when a client connects:
 
-1. **Client connects** to `localhost:8080`
-2. **Server accepts** the connection (`accept()`)
-3. **Server reads** the HTTP request (currently ignored)
-4. **Server calls** `send_file(client_socket, "index.html")`
-5. **File handler** opens `index.html` from the `bin/` directory
-6. **HTTP response** is initialized with status 200 OK and HTML content type
-7. **Response headers** are serialized and sent to the client
-8. **File content** is streamed in 4KB chunks
-9. **Connection is closed** by the server
-10. **Server returns** to waiting for the next connection
+1. **Server starts** with a filename specified via command-line argument
+2. **Client connects** to `localhost:8080`
+3. **Server accepts** the connection (`accept()`)
+4. **Server reads** the HTTP request (currently ignored)
+5. **Server calls** `send_file(client_socket, response_file)` where `response_file` is the command-line argument
+6. **File handler** opens the specified file (from the `bin/` directory or absolute path)
+7. **HTTP response** is initialized with status 200 OK and HTML content type
+8. **Response headers** are serialized and sent to the client
+9. **File content** is streamed in 4KB chunks
+10. **Connection is closed** by the server
+11. **Server returns** to waiting for the next connection
 
 ---
 
@@ -323,10 +332,11 @@ Here's a step-by-step example of what happens when a client connects:
 
 1. **Single-threaded**: Only handles one connection at a time
 2. **Request parsing**: Client requests are read but not parsed or used
-3. **Static responses**: Always serves `index.html` regardless of request
+3. **Static file selection**: File to serve is determined by command-line argument, not by the client's request
 4. **No routing**: No URL path handling or routing mechanism
 5. **Binary file support**: Body length calculation uses `strlen()`, which doesn't work for binary files
 6. **Memory management**: Some allocated memory (e.g., from `long_to_string()`) may not be freed
+7. **Command-line requirement**: Server requires a filename argument to start (no default file)
 
 ### Potential Extensions
 
@@ -357,12 +367,22 @@ This will:
 ### Running the Server
 
 ```bash
-./bin/server
+./bin/server <filename>
 ```
 
-The server will start listening on port 8080. You can test it by:
+The server requires a command-line argument specifying which file to serve. The server will start listening on port 8080 and serve the specified file to all clients.
+
+**Examples:**
+```bash
+./bin/server index.html
+./bin/server pages/tutorial.html
+```
+
+You can test it by:
 - Opening `http://localhost:8080` in a web browser
 - Using `curl http://localhost:8080`
+
+**Note**: The filename should be relative to the `bin/` directory or an absolute path to the file you want to serve.
 
 ### Cleaning Build Artifacts
 
@@ -385,3 +405,19 @@ No external libraries are required beyond the standard C library and POSIX syste
 ---
 
 *Last Updated: Based on current codebase structure*
+
+---
+
+## Recent Changes
+
+### Command-Line Argument Support
+The server now accepts a command-line argument to specify which file to serve:
+- **Before**: Server always served `index.html` regardless of request
+- **After**: Server requires a filename argument (e.g., `./bin/server index.html` or `./bin/server pages/tutorial.html`)
+- **Impact**: Allows serving different files without recompiling, but requires the filename to be specified at startup
+
+### New Files
+- **`bin/pages/tutorial.html`**: A comprehensive tutorial HTML file about creating, distributing, and consuming C static libraries. This file can be served by the server using the command: `./bin/server pages/tutorial.html`
+
+### Styling Updates
+- **`bin/pages/tutorial.html`**: Updated styling to match the classic beige/black theme used in `index.html`, including Times New Roman font, beige background (#f5f5dc), white container with black borders, and consistent heading styles.
