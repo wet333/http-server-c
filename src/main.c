@@ -3,6 +3,7 @@
 #include <sys/socket.h>
 #include "server.h"
 #include "file_handler.h"
+#include "constants.h"
 
 int main() {
     // Init Server Socket
@@ -28,8 +29,8 @@ int main() {
         }
 
         // We ignore the client request by now
-        char temp_buffer[1024];
-        recv(new_socket, temp_buffer, 1024, 0);
+        char temp_buffer[BUFFER_SIZE];
+        recv(new_socket, temp_buffer, BUFFER_SIZE, 0);
 
         // Send response
         send_file(new_socket, "index.html");

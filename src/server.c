@@ -16,8 +16,6 @@ HttpServer init_server(int port) {
         exit(EXIT_FAILURE);
     }
 
-    // setsockopt(server.socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
-
     // Configure Server Socket
     server.address.sin_family = AF_INET;
     server.address.sin_addr.s_addr = INADDR_ANY;

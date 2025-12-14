@@ -13,7 +13,7 @@ TARGET_NAME = server
 TARGET = $(BIN_DIR)/$(TARGET_NAME)
 
 # Encontramos los sources (puedes listarlos a mano si prefieres)
-SRCS = $(SRC_DIR)/main.c $(SRC_DIR)/server.c $(SRC_DIR)/file_handler.c
+SRCS = $(shell find $(SRC_DIR) -type f -name "*.c")
 
 # Convertimos 'src/archivo.c' en 'build/archivo.o'
 OBJS = $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRCS))
@@ -29,6 +29,7 @@ $(TARGET): $(OBJS)
 # --- Fase de Compilación (Crear los objetos) ---
 # Esta regla dice: Para hacer build/%.o, busca src/%.c
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(dir $@)
 	@echo "Compilando: $<"
 	$(CC) $(CFLAGS) -c $< -o $@
 

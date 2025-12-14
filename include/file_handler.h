@@ -1,7 +1,8 @@
 #ifndef FILE_HANDLER_H
 #define FILE_HANDLER_H
 
-// Envía un archivo completo a un socket cliente
-void send_file(int client_socket, const char *filename);
+void send_file(int client_socket, char *filename);
+long get_file_size(char *filename);
+void stream_file_to_client(int client_socket, char *filename);
 
 #endif
