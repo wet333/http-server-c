@@ -18,6 +18,7 @@ typedef enum {
 
 typedef enum {
     MIME_TEXT_HTML,
+    MIME_TEXT_CSS,
     MIME_TEXT_PLAIN,
     MIME_APPLICATION_JSON,
     MIME_IMAGE_PNG

@@ -15,6 +15,7 @@ const char* get_status_phrase(HttpStatus status) {
 const char* get_mime_string(MimeType type) {
     switch (type) {
         case MIME_TEXT_HTML: return "text/html; charset=UTF-8";
+        case MIME_TEXT_CSS: return "text/css; charset=UTF-8";
         case MIME_TEXT_PLAIN: return "text/plain; charset=UTF-8";
         case MIME_APPLICATION_JSON: return "application/json";
         case MIME_IMAGE_PNG: return "image/png";

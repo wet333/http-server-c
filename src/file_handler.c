@@ -30,7 +30,7 @@ void send_file(int client_socket, char *filename) {
     }
 
     // Basic HTTP Headers
-    response_init(&res, HTTP_OK, MIME_TEXT_HTML);
+    response_init(&res, HTTP_OK, get_mimetype_for_file(filename));
     res.body_length = get_file_size(filename);
     response_add_header(&res, "Server-Token", "987654321"); // Test header (no real use)
     int total_bytes = get_response_size(&res, response_buffer, sizeof(response_buffer));
@@ -54,6 +54,27 @@ long get_file_size(char *filename) {
     fclose(fp);
 
     return size;
+}
+
+MimeType get_mimetype_for_file(char *filename) {
+    char *file_extension = strrchr(filename, '.');
+
+    // Assigns plain text when file has no extension
+    if (file_extension == NULL) {
+        return MIME_TEXT_PLAIN;
+    }
+
+    if (strcmp(file_extension, ".html") == 0 || strcmp(file_extension, ".htm") == 0) {
+        return MIME_TEXT_HTML;
+    } else if (strcmp(file_extension, ".css") == 0) {
+        return MIME_TEXT_CSS;
+    } else if (strcmp(file_extension, ".json") == 0) {
+        return MIME_APPLICATION_JSON;
+    } else if (strcmp(file_extension, ".png") == 0) {
+        return MIME_IMAGE_PNG;
+    } else {
+        return MIME_TEXT_PLAIN; // Plain text by default
+    }
 }
 
 void stream_file_to_client(int client_socket, char *filename) {
