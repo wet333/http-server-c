@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
     // Main Loop
     while (1) {
 
-        printf("Listening for connections...");
+        printf("Listening for connections...\n");
 
         // Client socket connection
         new_socket = accept(

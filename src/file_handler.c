@@ -13,7 +13,7 @@ void send_file(int client_socket, char *filename) {
     HttpResponse res;
     char response_buffer[BUFFER_SIZE];
 
-    printf("File to open: %s \n", filename);
+    printf("Reading file: %s \n", filename);
 
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
