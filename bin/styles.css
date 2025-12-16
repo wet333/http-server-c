@@ -145,3 +145,11 @@ pre code {
     color: #000;
     margin-top: 0;
 }
+
+
+/* Random Image */
+#random-image {
+    width: auto;
+    height: 480px;
+    image-rendering: -webkit-optimize-contrast;
+}
